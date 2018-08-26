@@ -1,6 +1,8 @@
 ﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "comboxdelegate.h"
+
 #include <QMainWindow>
 #include<QMouseEvent>
 #include "mylineedit.h"
@@ -13,6 +15,9 @@
 #include<QSqlTableModel>
 #include<QTableWidgetItem>
 #include<QTreeWidgetItem>
+#include<QPushButton>
+#include<QItemDelegate>
+#include<spinBoxdelegate.h>
 
 #pragma execution_character_set("utf-8")
 
@@ -42,6 +47,7 @@ private slots:
     void toolbar_tri(bool b, int i = 20);
     void tw_changeValue(QTableWidgetItem *curr );
     void tw_changeValue1(QTableWidgetItem* curr,QTableWidgetItem* prv);
+    void tv_changValue(QModelIndex index);
 
     void on_pushButton_2_clicked();
 
@@ -49,8 +55,13 @@ private slots:
 
     void on_pushButton_8_clicked();
 
+    void on_pushButton_9_clicked();
+
+    void on_pushButton_10_clicked();
+
 private:
     Ui::MainWindow *ui;
+    QSqlTableModel *tabel_model;
 };
 
 #endif // MAINWINDOW_H

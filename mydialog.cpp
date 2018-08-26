@@ -2,6 +2,7 @@
 
 myDialog::myDialog(QWidget *parent)
 {
+
     setWindowTitle("my dialog");
     edit = new QLineEdit("");
     lbl = new QLabel("Name");

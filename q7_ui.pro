@@ -34,7 +34,10 @@ SOURCES += \
     mydialog.cpp \
     mainwindow2.cpp \
     paintwidget.cpp \
-    donewdialog.cpp
+    donewdialog.cpp \
+    spinBoxdelegate.cpp \
+    comboxdelegate.cpp \
+    checkdelagate.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -43,7 +46,10 @@ HEADERS += \
     mydialog.h \
     mainwindow2.h \
     paintwidget.h \
-    donewdialog.h
+    donewdialog.h \
+    spinBoxdelegate.h \
+    comboxdelegate.h \
+    checkdelagate.h
 
 FORMS += \
         mainwindow.ui \

@@ -108,7 +108,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //sqlite3
     //eorro：找不到table，因为创建的数据库是在程序的运行目录下，所以需要去程序的运行目录下才能找到该数据库和创建表格。
 
-    /*
+
     QSqlDatabase database;
     if (QSqlDatabase::contains("qt_sql_default_connection"))
     {
@@ -121,7 +121,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //        database.setUserName("XingYeZhiXia");
 //        database.setPassword("123456");
     }
-
+    /*
     if (!database.open())
     {
         qDebug() << "Error: Failed to connect database." << database.lastError();
@@ -163,7 +163,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //[2] QSqlError("1045", "QMYSQL: Unable to connect", "Access denied for user 'root'@'localhost' (using password: YES)")
 
-
+    /*
     QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
         db.setHostName("localhost");   						//127.0.0.1也是一样的,属于本地地址
         db.setUserName("root");       							//登陆MYSQL的用户名
@@ -192,21 +192,41 @@ MainWindow::MainWindow(QWidget *parent) :
 //                line->setText(QString("id:%1    name:%2").arg(age).arg(name));
             }
         }
-
+*/
     //MVC------------------------>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         //tableview
-        QSqlTableModel *tabel_model = new QSqlTableModel();
-          tabel_model->setTable("actor");
+        tabel_model = new QSqlTableModel();
+          tabel_model->setTable("student");
           tabel_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
 
           tabel_model->select();
-          tabel_model->setHeaderData(1, Qt::Horizontal, "姓");
-          tabel_model->setHeaderData(2, Qt::Horizontal, "名");
-          tabel_model->setHeaderData(3, Qt::Horizontal, "入职时间");
+//          tabel_model->setHeaderData(1, Qt::Horizontal, "姓");
+//          tabel_model->setHeaderData(2, Qt::Horizontal, "名");
+//          tabel_model->setHeaderData(3, Qt::Horizontal, "入职时间");
         ui->tableView->setModel(tabel_model);
-        ui->tableView->hideColumn(0);
+//        ui->tableView->hideColumn(0);
 //        connect(ui->tableView,SIGNAL(tri))
 
+        connect(ui->tableView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(tv_changValue(QModelIndex)));//获取选中值。
+//        ui->tableView->setEnabled(false);
+//        ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);//设置不可编辑
+
+        //行列自适应,★★★先装载数据，再自适应。
+        ui->tableView->resizeColumnsToContents();
+        ui->tableView->resizeRowsToContents();
+        //充满窗体
+        //表列随着表格变化而自适应变化
+        ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+        //表行随着表格变化而自适应变化
+        ui->tableView->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+        //在tableview上添加控件/Delegate类
+//        QPushButton *btn = new QPushButton("click");
+        spinBoxdelegate *delegate = new spinBoxdelegate();
+        comBoxdelegate *delegate_cb = new comBoxdelegate();
+
+        ui->tableView->setItemDelegate(delegate);
+        ui->tableView->setItemDelegateForColumn(1   ,delegate_cb);
         //tablewidget
         QSqlQuery query;
         int i = 0, j = 0, nColumn, nRow;
@@ -255,6 +275,10 @@ MainWindow::MainWindow(QWidget *parent) :
         //获取点击时候的值
         connect(ui->tableWidget,SIGNAL(itemDoubleClicked(QTableWidgetItem*)),this,SLOT(tw_changeValue(QTableWidgetItem*)));
         connect(ui->tableWidget,SIGNAL(currentItemChanged(QTableWidgetItem*,QTableWidgetItem*)),this,SLOT(tw_changeValue1(QTableWidgetItem*,QTableWidgetItem*)));
+
+
+        //tabelList
+
 }
 
 MainWindow::~MainWindow()
@@ -322,15 +346,25 @@ void MainWindow::toolbar_tri(bool b, int i)
 
 void MainWindow::tw_changeValue(QTableWidgetItem *curr)
 {
-
+    qDebug()<<"tw_changeValue";
    // ui->label->setText(prev->text());
     ui->label_2->setText(curr->text());
 }
 
 void MainWindow::tw_changeValue1(QTableWidgetItem *curr, QTableWidgetItem *prv)
 {
-     ui->label->setText(prv->text());
+    qDebug()<<"tw_changeValue1";
+     //ui->label->setText(prv->text());
+     qDebug()<<"tw_changeValue1";
      ui->label_3->setText(curr->text());
+}
+
+void MainWindow::tv_changValue(QModelIndex index)
+{
+    int col = index.column();
+    int row = index.row();
+    QVariant qv = index.data();
+    qDebug()<<"tv_changValue:"<<qv.toString()<<" "<<col <<" "<<row;
 }
 
 void MainWindow::on_pushButton_2_clicked()
@@ -368,6 +402,23 @@ void MainWindow::on_pushButton_6_clicked()
 }
 
 void MainWindow::on_pushButton_8_clicked()
+{
+    tabel_model->select();
+    ui->tableView->setModel(tabel_model);
+}
+
+void MainWindow::on_pushButton_9_clicked()
+{
+    tabel_model->database().transaction();//处理数据库的事物
+    if(tabel_model->submitAll()){//提交更新的数据
+        tabel_model->database().commit();//更新数据
+    }else{
+        tabel_model->database().rollback();//失败的话，回滚事务
+        qDebug()<<"update failed!";
+    }
+}
+
+void MainWindow::on_pushButton_10_clicked()
 {
 
 }

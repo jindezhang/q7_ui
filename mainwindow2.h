@@ -5,7 +5,16 @@
 #include <QEasingCurve>
 #include <QPainter>
 #include <Qt>
+#include<QSqlDatabase>
+#include<QSqlTableModel>
+#include "spinBoxdelegate.h"
+#include"comboxdelegate.h"
+#include"checkdelagate.h"
+#include <QDebug>
 
+
+
+//实现了下拉和spinbox的嵌入控件到tableview的功能，未实现checkbox嵌入的功能。
 namespace Ui {
 class MainWindow2;
 }
@@ -18,13 +27,11 @@ public:
     explicit MainWindow2(QWidget *parent = 0);
     ~MainWindow2();
 protected:
-    void paintEvent(QPaintEvent *event);
-private slots:
-    void on_pushButton_clicked();
+
 
 private:
     Ui::MainWindow2 *ui;
-    QEasingCurve *qe_line;
+    QSqlTableModel *tabel_model;
 };
 
 #endif // MAINWINDOW2_H
